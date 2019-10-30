@@ -539,7 +539,6 @@ class ProjectViewDatasets extends Component {
     if(!loading && !kgLoading && this.props.core.datasets !== undefined && this.props.core.datasets.length === 0){
       return <Col sm={12} md={8} lg={10}>No datasets found for this project. If you recently activated the knowledge graph or added the datasets try refreshing the page.</Col>;
     }
-
     return [
       kgLoading ? null
         :<Col key="datasetsnav" sm={12} md={4} lg={2}>
