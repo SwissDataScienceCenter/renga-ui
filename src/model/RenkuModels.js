@@ -24,6 +24,8 @@
  */
 
 import { Schema } from './Model'
+import { parseOnlyLetterAndSpace } from '../utils/formgenerator/services/InputParser';
+import { checkAtLeastLength, checkIsfilled } from '../utils/formgenerator/services/InputValidator';
 
 const userSchema = new Schema({
   name: {initial: '', mandatory: false},
@@ -209,5 +211,44 @@ const notebooksSchema = new Schema({
   }
 });
 
+const datasetFormSchema = new Schema({
+  name: {
+    initial: "",
+    name: 'name',
+    label: 'Name',
+    type: 'text',
+    parseFun: parseOnlyLetterAndSpace,
+    help: "Help text",
+    validators: [{
+      id: 'name-length',
+      isValidFun: expression => checkAtLeastLength(expression, 3),
+      alert: 'Name is too short'
+    }]
+  },
+  description: {
+    initial: "",
+    name: 'description',
+    label: 'Description',
+    type: 'cktextarea',
+    validators: [{
+      id: 'name-length',
+      isValidFun: expression => checkIsfilled(expression, 3),
+      alert: 'Description can\'t be emtpy'
+    }]
+  },
+  files: {
+    initial: [],
+    name: 'files',
+    label: 'Files',
+    type: 'filepond',
+    validators:[{
+      id: 'files-length',
+      isValidFun: expression => checkIsfilled(expression, 1),
+      alert: 'File length should be more than 1.'
+    }]
+  }
+});
+
 export { userSchema, metaSchema, displaySchema, newProjectSchema, projectSchema, forkProjectSchema };
 export { notebooksSchema };
+export { datasetFormSchema };

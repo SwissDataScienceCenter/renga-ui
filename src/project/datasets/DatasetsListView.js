@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink,  Link } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTable } from '@fortawesome/free-solid-svg-icons';
+import { faTable, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 import '../filestreeview/treeviewstyle.css';
 import { Loader } from '../../utils/UIComponents';
+import { UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 function DatasetListRow(props){
   const dataset = props.dataset;
@@ -34,7 +35,19 @@ export default function DatasetsListView(props){
         <span className="tree-header-title text-truncate">
           Datasets List
         </span>
-      </div>
+        <span className="float-right throw-right-in-flex">
+          <UncontrolledButtonDropdown size="sm">
+            <DropdownToggle color="primary" className="alternateToggleStyle">
+              <FontAwesomeIcon icon={faEllipsisV} style={{ color: 'white', backgroundColor: "#5561A6" }} />
+            </DropdownToggle>
+            <DropdownMenu right={false}>
+              <DropdownItem>
+                <Link to={props.newDatasetUrl}>New Dataset</Link>
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledButtonDropdown>
+        </span>
+      </div> 
       <nav>
         {
           datasets !== undefined ?
