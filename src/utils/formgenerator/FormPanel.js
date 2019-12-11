@@ -49,10 +49,12 @@ function FormPanel({ title, btnName, submitCallback, model }) {
   return (
     <Col>
       <h3 className="uk-heading-divider uk-text-center pb-2">{title}</h3>
-      <Form>
+      {/* <Form> */}
+      <div>
         {inputs.map(input => renderInput(input))}
         <Button className="float-right mt-1" color="primary" onClick={setSubmit}>{btnName}</Button>
-      </Form>
+        </div>
+      {/* </Form> */}
     </Col>
   )
 }

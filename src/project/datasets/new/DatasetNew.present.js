@@ -27,14 +27,31 @@
 
 import React from 'react';
 import { Row, Col } from 'reactstrap';
-import FormPanel from '../../../utils/formgenerator';
+import {FormPanel} from '../../../utils/formgenerator';
 
 function DatasetNew(props){
 	
-  const submitCallback = e => 
-    alert(Object.values(props.datasetFormSchema)
-      .map(m => m.label + ': ' + m.value + ',\n')
-      .join(''));
+  // const submitCallback = e => 
+  //   alert(Object.values(props.datasetFormSchema)
+  //     .map(m => m.label + ': ' + m.value + ',\n')
+  //     .join(''));
+
+  const submitCallback = e => {
+    const dataset= {};
+    dataset.name = props.datasetFormSchema.name.value;
+    dataset.description = props.datasetFormSchema.description.value;
+    dataset.files = props.datasetFormSchema.files.value.map((file)=> 
+    {
+      console.log(file.file_id); 
+      return { "file_id":file.file_id } 
+    });
+    
+   props.client.postDataset(props.projectPathWithNamespace, dataset)
+   .then(dataset => {
+    console.log(dataset);
+    props.history.push({pathname: `/projects/${props.projectPathWithNamespace}/datasets`});
+  });
+  }
 
   return (
     <Row>

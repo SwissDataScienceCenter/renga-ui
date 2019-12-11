@@ -41,3 +41,21 @@
 input[type="text"], textarea {
 	box-shadow:none !important;
 }
+
+.table-files{
+	font-size:0.9rem;
+	font-weight: lighter;
+}
+
+.table-files thead{
+	background-color: #fafafa;
+}
+
+.table-files th{
+	border-color:#c4c4c4;
+}
+
+.table thead th{
+	border-bottom-width: 1px;
+	border-color:#c4c4c4;
+}

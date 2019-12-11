@@ -313,6 +313,8 @@ class View extends Component {
         fileContentUrl={subUrls.fileContentUrl}
         projectsUrl={subUrls.projectsUrl}
         selectedDataset={p.match.params.datasetId}
+        client={this.props.client}
+        history={this.props.history}
       />,
 
       mrList: <ConnectedMergeRequestList key="mrList" store={this.projectState.reduxStore}

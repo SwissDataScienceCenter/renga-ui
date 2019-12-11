@@ -23,29 +23,30 @@
  *  Container components for new dataset.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { datasetFormSchema } from '../../../model/RenkuModels';
 import DatasetNew from './DatasetNew.present'
 
 function NewDataset(props) {
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [files, setFiles] = useState([]);
+  // const [name, setName] = useState("");
+  // const [description, setDescription] = useState("");
+  // const [files, setFiles] = useState([]);
 
-  const handlers = {
-    setName : setName,
-    setDescription: setDescription,
-    setFiles: setFiles
-  }
+  // const handlers = {
+  //   setName : setName,
+  //   setDescription: setDescription,
+  //   setFiles: setFiles
+  // }
+
 	
   return <DatasetNew
-    handlers={handlers}
     datasetFormSchema={datasetFormSchema}
     user={props.user}
-    name={name}
-    description={description}
-    files={files} />;
+    projectPathWithNamespace={props.projectPathWithNamespace}
+    client={props.client}
+    history={props.history}
+  />;
 }
 
 
