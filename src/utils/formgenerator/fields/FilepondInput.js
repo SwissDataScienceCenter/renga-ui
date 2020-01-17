@@ -29,6 +29,8 @@ import HelpText from './HelpText';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { formatBytes } from './../../HelperFunctions'
+import worker_script from './uploadfile';
+
 function removeItems(arr, item) {
   for (var i = 0; i < item; i++) {
     arr.pop();
@@ -53,8 +55,55 @@ function useFiles({ initialState = [], maxFiles = 150 }) {
   return [state, withBlobs];
 }
 
+function getWorker(workers = []){
+  if(workers.length === 0) return;
+
+  let min_load_worker = workers[0];
+
+  for(let i = 0; i<workers.length; i++){
+    if (workers[i].load == 0)
+      return workers[i];
+    else if(workers[i].load < min_load_worker.load){
+      min_load_worker = workers[i]
+    }
+  }
+  return min_load_worker;
+}
+
+function getArrayOfWorkers(amount = 10, setUploadedFiles, setFilesErrors){
+  console.log("getting array of workers")
+  let workers = [];
+  for(let i = 0; i<amount; i++){
+    let worker = new Worker(worker_script);
+
+    worker.onmessage= ev => {
+      const response = ev.data;
+      if (response.error !== undefined) {
+        setFilesErrors(prevFilesErrors => [...prevFilesErrors, { file_name:response.file.name , file_size:response.file.size, file_error: response.error}])
+        return [];
+      } else {
+        let request_file = response.file;
+        let response_file = response.body.result.files[0];
+        if(response_file.file_name !== undefined && response_file.file_name !== request_file.name){
+          response_file = { 
+            "file_name": response.file.name, 
+            "file_size": response_file.file_size,
+            "file_id": response_file.file_id,
+            "file_alias": response_file.file_name
+          }
+        }
+        setUploadedFiles(prevUploadedFiles => [...prevUploadedFiles, response_file]);
+        return response_file;
+      }
+    }
+    workers[i] = {worker: worker, load: 0, index:i};  
+  }
+  console.log(workers)
+  return workers;
+}
 
 function FilePondInput({ name, label, type, value, alert, setInputs, help }) {
+  
   const maxFiles = 10;
   const [over, setOver] = useState(false);
   const [files, setFiles] = useFiles({});
@@ -62,6 +111,13 @@ function FilePondInput({ name, label, type, value, alert, setInputs, help }) {
   const [displayFiles, setDisplayFiles] = useState([]);
   const [filesErrors, setFilesErrors] = useState([]);
   const $input = useRef(null);
+  const [workers, setWorkers] = useState([]);
+
+  useEffect(() => {
+    console.log(workers);
+    if(workers.length === 0)
+      setWorkers(getArrayOfWorkers(10, setUploadedFiles, setFilesErrors));
+  }, []);
 
   useEffect(() => {
     // action on update of uploadedFiles
@@ -105,49 +161,16 @@ function FilePondInput({ name, label, type, value, alert, setInputs, help }) {
     )
   }, [filesErrors]);
 
-  let uploadFile = (file) => {
-    const data = new FormData();
-    data.append('file', file);
-    data.append('file_name', file.name);
 
-    let headers = new Headers({
-      'credentials': 'same-origin',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Accept': 'application/json'
-    });
-
-    return fetch('https://virginia.dev.renku.ch/api/renku/cache.files_upload?override_existing=true', {
-      method: 'POST',
-      headers: headers,
-      body: data,
-      processData: false
-    }).then((response) => {
-      if(response.status >=400) throw new Error();
-      response.json().then((body) => {
-        if (body.error) {
-          setFilesErrors(prevFilesErrors => [...prevFilesErrors, { file_name:file.name , file_size:file.size, file_error: body.error.reason}])
-          return [];
-        } else {
-          let new_file = body.result.files[0]//Object.keys(body.result.files).map((key) => body.result.files[key]);
-          console.log(body.result.files[0].file_name)
-          console.log(file.name)
-          if(body.result.files[0].file_name !== undefined && body.result.files[0].file_name !== file.name){
-            new_file = { 
-              "file_name": file.name, 
-              "file_size": new_file.file_size,
-              "file_id": new_file.file_id,
-              "file_alias": new_file.file_name
-            }
-          }
-          setUploadedFiles(prevUploadedFiles => [...prevUploadedFiles, new_file]);
-          return new_file;
-        }
-      });
-    }).catch((error) => {
-      setFilesErrors(prevFilesErrors => [...prevFilesErrors, { file_name:file.name , file_size:file.size, file_error: "Error uploading the file."}])
-      return [];
-    })
+  let uploadFile = (file) =>{ 
+    console.log(workers);
+    const worker = getWorker(workers);
+    console.log(worker);
+    worker.load = worker.load+1;
+    worker.worker.postMessage([file]);
   }
+
+
 
   let deleteFile = (file_name) => {
     setFilesErrors(prevfilesErrors => prevfilesErrors.filter(file => file.file_name !== file_name));
@@ -170,6 +193,7 @@ function FilePondInput({ name, label, type, value, alert, setInputs, help }) {
         onDrop={e => {
           e.preventDefault();
           e.persist();
+          console.log("on drop")
           Array.from(e.dataTransfer.files).map(file => uploadFile(file));
           setFiles([...files, ...e.dataTransfer.files]);
           const newDisplayFiles = Array.from(e.dataTransfer.files)
@@ -196,17 +220,17 @@ function FilePondInput({ name, label, type, value, alert, setInputs, help }) {
         <Table hover bordered className="table-files">
           <thead>
             <tr>
-              <th className="font-weight-light">#</th>
+              <th className="font-weight-light text-center">#</th>
               <th className="font-weight-light">File Name</th>
               <th className="font-weight-light">File Size</th>
               <th className="font-weight-light">Status</th>
-              <th className="font-weight-light">Delete</th>
+              <th className="font-weight-light"></th>
             </tr>
           </thead>
           <tbody>
             { displayFiles.map((file, index) => (
               <tr key={file.file_name + "file"} onClick={()=>{}}>
-                <td>{index + 1}</td>
+                <td className="text-center">{index + 1}</td>
                 <td>
                   <span>{file.file_name}</span>
                   {file.file_alias ? <small><br></br><span className="text-danger"> *File was renamed to:{file.file_alias}</span></small> : null}
@@ -220,7 +244,7 @@ function FilePondInput({ name, label, type, value, alert, setInputs, help }) {
                       : <span><Spinner color="primary" size="sm" /> uploading</span>
                 }</td>
                 <td>
-                  <FontAwesomeIcon color="var(--danger)" icon={faTrashAlt} onClick={ () => deleteFile(file.file_name)}/>
+                  <FontAwesomeIcon  color="var(--danger)" icon={faTrashAlt} className="text-center" onClick={ () => deleteFile(file.file_name)}/>
                 </td>
               </tr>
             ))
