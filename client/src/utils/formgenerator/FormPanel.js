@@ -87,10 +87,15 @@ function FormPanel({ title, btnName, submitCallback, model, serverErrors,
       disabled={submitLoader.value || (input.edit === false && edit) || disableAll} setInputs={setInputs} {...input} />;
   };
 
-  const extractErrorsAndWarnings = (errorOrWarning) => {
+  const extractErrorsAndWarnings = (errorOrWarning, errorMessage) => {
     let content;
+    console.log(errorOrWarning);
+    console.log(typeof errorOrWarning);
     if (typeof errorOrWarning === "string") {
       content = <p>{errorOrWarning}</p>;
+    }
+    else if (!Array.isArray(errorOrWarning)) {
+      content = errorOrWarning;
     }
     else {
       //this could be improve to extract better the error message
@@ -100,7 +105,7 @@ function FormPanel({ title, btnName, submitCallback, model, serverErrors,
       );
     }
     return (<div>
-      <p>Errors occurred while creating the project.</p>
+      {errorMessage ? <p>Errors occurred while creating the project.</p> : null }
       {content}
     </div>);
   };
@@ -116,9 +121,9 @@ function FormPanel({ title, btnName, submitCallback, model, serverErrors,
         <div>
           {inputs.map(input => renderInput(input))}
           {serverErrors ? <UncontrolledAlert color="danger">
-            {extractErrorsAndWarnings(serverErrors)}</UncontrolledAlert> : null}
+            {extractErrorsAndWarnings(serverErrors, true)}</UncontrolledAlert> : null}
           {serverWarnings ? <UncontrolledAlert color="warning">
-            {extractErrorsAndWarnings(serverWarnings)}</UncontrolledAlert> : null}
+            {extractErrorsAndWarnings(serverWarnings, false)}</UncontrolledAlert> : null}
           {submitLoader !== undefined && submitLoader.value ?
             <FormText color="primary">
               <Loader size="16" inline="true" margin="2" />

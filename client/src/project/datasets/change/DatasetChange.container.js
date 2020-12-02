@@ -50,7 +50,9 @@ function ChangeDataset(props) {
   const [submitLoader, setSubmitLoader] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [jobsStats, setJobsStats] = useState(undefined);
+  const [remoteBranch, setRemoteBranch] = useState(undefined);
   const warningOn = useRef(false);
+  const datasetInRemoteBranch = useRef(false);
 
   dsFormSchema.files.uploadFileFunction = props.client.uploadFile;
   dsFormSchema.files.filesOnUploader = useRef(0);
@@ -79,10 +81,15 @@ function ChangeDataset(props) {
     }
   }
 
-  function checkJobsAndSetWarnings(jobsList, tooLong = false) {
+  function checkJobsAndSetWarnings(jobsList, tooLong = false, remote_branch) {
     let failed = jobsList.filter(job => job.job_status === JobStatusMap.FAILED );
     let inProgress = jobsList
       .filter(job => (job.job_status === JobStatusMap.IN_PROGRESS || job.job_status === JobStatusMap.ENQUEUED) );
+
+    if (remote_branch) {
+      datasetInRemoteBranch.current = true;
+      setRemoteBranch(remote_branch);
+    }
 
     if (failed.length !== 0 || inProgress.length !== 0 || tooLong === true) {
       setJobsStats({ failed, inProgress, tooLong });
@@ -102,7 +109,7 @@ function ChangeDataset(props) {
   const monitorURLJobsStatuses = (datasetsJobsArray) => {
     return props.client.getAllJobStatus()
       .then(response => {
-        //we set the new status and then we check if they are all finished (completed or failed)
+        // we set the new status and then we check if they are all finished (completed or failed)
         datasetsJobsArray.map(localJob => setNewJobStatus(localJob, response.jobs));
         return getJobsStats(datasetsJobsArray);
       });
@@ -164,20 +171,33 @@ function ChangeDataset(props) {
 
           let cont = 0;
           const INTERVAL = 6000;
+          const remote_branch = response.data.result.remote_branch;
 
           let monitorJobs = setInterval(() => {
             if (filesURLJobsArray.length === 0) {
-              redirectAfterSuccess(monitorJobs, dataset.name);
+              if (remote_branch) {
+                setRemoteBranch(remote_branch);
+                datasetInRemoteBranch.current = true;
+                setSubmitLoader(false);
+                clearInterval(monitorJobs);
+              }
+              else { redirectAfterSuccess(monitorJobs, dataset.name); }
             }
             else {
               monitorURLJobsStatuses(filesURLJobsArray).then(jobsStats => {
                 if (jobsStats.finished) {
                   if (jobsStats.failed.length === 0) {
-                    redirectAfterSuccess(monitorJobs, dataset.name);
+                    if (remote_branch) {
+                      setRemoteBranch(remote_branch);
+                      datasetInRemoteBranch.current = true;
+                      setSubmitLoader(false);
+                      clearInterval(monitorJobs);
+                    }
+                    else { redirectAfterSuccess(monitorJobs, dataset.name); }
                   }
                   else {
                     //some or all failed, but all finished
-                    checkJobsAndSetWarnings(filesURLJobsArray, false);
+                    checkJobsAndSetWarnings(filesURLJobsArray, false, remote_branch);
                     clearInterval(monitorJobs);
                   }
                 }
@@ -262,8 +282,11 @@ function ChangeDataset(props) {
     submitLoader={submitLoader}
     onCancel={onCancel}
     warningOn={warningOn}
+    datasetInRemoteBranch={datasetInRemoteBranch}
     jobsStats={jobsStats}
+    remoteBranch={remoteBranch}
     overviewCommitsUrl={props.overviewCommitsUrl}
+    mergeRequestsOverviewUrl={props.mergeRequestsOverviewUrl}
     edit={props.edit}
   />;
 }

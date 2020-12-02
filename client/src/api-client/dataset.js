@@ -154,17 +154,30 @@ export default function addDatasetMethods(client) {
         });
       })
       .then(response => {
-        if (response.data.error) { return response; }
-        else
+        console.log(response.data.result.remote_branch);
+        if (response.data.error) return response;
+
+        if (response.data.result.remote_branch) {
+          client.getProjectIdFromCoreService(projectUrl + "#" + response.data.result.remote_branch)
+            .then(response => console.log(response));
+        }
+
         if (renkuDataset.files.length > 0) {
+          const body = response.data.result.remote_branch ? {
+            "name": renkuDataset.name,
+            "files": renkuDataset.files,
+            "project_id": project_id,
+            "remote_branch": response.data.result.remote_branch
+          } : {
+            "name": renkuDataset.name,
+            "files": renkuDataset.files,
+            "project_id": project_id
+          };
+
           return client.clientFetch(`${client.baseUrl}/renku/datasets.add`, {
             method: "POST",
             headers: headers,
-            body: JSON.stringify({
-              "name": renkuDataset.name,
-              "files": renkuDataset.files,
-              "project_id": project_id
-            })
+            body: JSON.stringify(body)
           });
         } return response;
       });

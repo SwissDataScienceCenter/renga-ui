@@ -35,6 +35,15 @@ import { Loader } from "../../../utils/UIComponents";
 
 function DatasetChange(props) {
 
+  const getRemoteBranchWarning = () => {
+    return <div>
+      <strong>The dataset was created in a new branch: {props.remoteBranch}</strong>
+      To see the dataset in the project you need to create a merge request for the branch and merge it to master.
+      <br/>
+      To do this go to <Link to={props.mergeRequestsOverviewUrl}>Merge Requests</Link>.
+    </div>;
+  };
+
   const getServerWarnings = () => {
     const failed = props.jobsStats.failed
       .map(job => <div key={"warn-" + job.file_url} className="pl-2">- {job.file_url}<br /></div>);
@@ -82,7 +91,12 @@ function DatasetChange(props) {
     </Col>;
   }
 
-  const warning = props.warningOn.current ? getServerWarnings() : undefined;
+  let warning;
+
+  if (props.datasetInRemoteBranch.current)
+    warning = props.warningOn.current ? getServerWarnings() : getRemoteBranchWarning();
+  else if (props.warningOn.current)
+    warning = getServerWarnings();
 
   const edit = props.edit;
 
@@ -93,7 +107,7 @@ function DatasetChange(props) {
     model={props.datasetFormSchema}
     serverErrors={props.serverErrors}
     serverWarnings={warning}
-    disableAll={props.warningOn.current === true}
+    disableAll={props.warningOn.current === true || props.datasetInRemoteBranch.current === true}
     submitLoader={{ value: props.submitLoader,
       text: edit ? "Modifying dataset, please wait..." : "Creating dataset, please wait..." }}
     cancelBtnName={props.warningOn.current ?
