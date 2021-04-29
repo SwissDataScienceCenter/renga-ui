@@ -35,6 +35,11 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          env:
+            - name: BASE_URL
+              value: {{ .Values.baseUrl | default (printf "%s://%s" (include "ui.protocol" .) .Values.global.renku.domain) | quote }}
+            - name: GATEWAY_URL
+              value: {{ .Values.gatewayUrl | default (printf "%s://%s/api" (include "ui.protocol" .) .Values.global.renku.domain) | quote }}
           livenessProbe:
             httpGet:
               path: /liveness
