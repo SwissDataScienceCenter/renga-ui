@@ -309,19 +309,8 @@ async function sleep(seconds) {
   await new Promise(r => setTimeout(r, seconds * 1000));
 }
 
-/**
- * This function returns the score of a string.
- * It adds up the unicode values of it.
- */
-function stringScore(s) {
-  let sum = 0;
-  for (let j = 0; j < s.length; j++)
-    sum += s.charAt(j).charCodeAt(0);
-  return sum;
-}
-
 export {
   slugFromTitle, getActiveProjectPathWithNamespace, splitAutosavedBranches, sanitizedHTMLFromMarkdown,
   simpleHash, parseINIString, formatBytes, groupBy, gitLabUrlFromProfileUrl, isURL, verifyTitleCharacters,
-  convertUnicodeToAscii, refreshIfNecessary, sleep, stringScore
+  convertUnicodeToAscii, refreshIfNecessary, sleep
 };

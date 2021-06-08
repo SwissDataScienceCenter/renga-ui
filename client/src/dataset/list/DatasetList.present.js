@@ -21,7 +21,6 @@ import { Route, Switch } from "react-router-dom";
 import { Row, Col, Alert, Card, CardBody } from "reactstrap";
 import { Button, Form, FormText, Input, Label, InputGroup, UncontrolledCollapse } from "reactstrap";
 import { DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
-import { stringScore } from "../../utils/HelperFunctions";
 import { MarkdownTextExcerpt, ListDisplay } from "../../utils/UIComponents";
 import { faCheck, faSortAmountUp, faSortAmountDown, faSearch, faBars, faTh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -169,8 +168,8 @@ class DatasetsRows extends Component {
 
       return {
         id: dataset.identifier,
+        itemType: "dataset",
         url: `${datasetsUrl}/${encodeURIComponent(dataset.identifier)}`,
-        stringScore: stringScore(dataset.identifier) % 3,
         title: dataset.title || dataset.name,
         description: dataset.description !== undefined && dataset.description !== null ?
           <Fragment>

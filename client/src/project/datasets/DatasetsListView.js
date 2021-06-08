@@ -4,17 +4,14 @@ import { Row, Col } from "reactstrap";
 import { ACCESS_LEVELS } from "../../api-client";
 import "../filestreeview/treeviewstyle.css";
 import { Loader, MarkdownTextExcerpt, TimeCaption } from "../../utils/UIComponents";
-import { stringScore } from "../../utils/HelperFunctions";
 import { SpecialPropVal } from "../../model";
 
 function DatasetListRow(props) {
   const dataset = props.dataset;
-  const colorsArray = ["green", "pink", "yellow"];
-  const color = colorsArray[stringScore(dataset.name) % 3];
 
   return <Link className="d-flex flex-row rk-search-result"
     to={`${props.datasetsUrl}/${encodeURIComponent(dataset.name)}/`}>
-    <span className={"circle me-3 mt-2 " + color}></span>
+    <span className={"circle me-3 mt-2 dataset"}></span>
     <Col className="d-flex align-items-start flex-column col-9 overflow-hidden">
       <div className="title d-inline-block text-truncate">
         {dataset.title || dataset.name}

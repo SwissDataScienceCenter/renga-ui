@@ -6,7 +6,6 @@ import { faComments } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RenkuMarkdown, TimeCaption, Pagination, Loader } from "../../utils/UIComponents";
 import { itemsStateMap } from "./CollaborationList.container";
-import { stringScore } from "../../utils/HelperFunctions";
 
 function issueStateBadge(issueStateValue) {
   let issueState = <Badge color="secondary">{issueStateValue}</Badge>;
@@ -24,11 +23,8 @@ class IssueListRow extends Component {
     const issueState = issueStateBadge(this.props.state);
     const titleText = this.props.title || "no title";
 
-    const colorsArray = ["green", "pink", "yellow"];
-    const color = colorsArray[stringScore(titleText) % 3];
-
     return <Link className="d-flex flex-row rk-search-result rk-search-result-100" to={issueUrl}>
-      <span className={"circle me-3 mt-2 " + color}></span>
+      <span className={"circle me-3 mt-2 collaboration"}></span>
       <Col className="d-flex align-items-start flex-column col-10 overflow-hidden">
         <div className="title d-inline-block text-truncate">
           {titleText}

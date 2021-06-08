@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TimeCaption, Pagination, Loader } from "../../utils/UIComponents";
 import { itemsStateMap } from "./CollaborationList.container";
 import { faLongArrowAltLeft as faLeftArrow } from "@fortawesome/free-solid-svg-icons";
-import { stringScore } from "../../utils/HelperFunctions";
-
 
 /**
  * Extract the display info from a merge request object.
@@ -49,11 +47,8 @@ class MergeRequestListRow extends Component {
     const { badgeText, badgeColor, timeCaption } = rowInfo;
     const statusBadge = <Badge color={badgeColor}>{badgeText}</Badge>;
 
-    const colorsArray = ["green", "pink", "yellow"];
-    const color = colorsArray[stringScore(this.props.title) % 3];
-
     return <Link className="d-flex flex-row rk-search-result rk-search-result-100" to={this.props.mrUrl}>
-      <span className={"circle me-3 mt-2 " + color}></span>
+      <span className={"circle me-3 mt-2 collaboration"}></span>
       <Col className="d-flex align-items-start flex-column col-9 overflow-hidden">
         <div className="title d-inline-block text-truncate">
           {this.props.title}

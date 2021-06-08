@@ -24,7 +24,6 @@ import {
 } from "reactstrap";
 import { faCheck, faSearch, faSortAmountDown, faSortAmountUp, faBars, faTh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { stringScore } from "../../utils/HelperFunctions";
 import {
   Loader, ProjectAvatar, RenkuMarkdown, RenkuNavLink, TimeCaption, ListDisplay, MarkdownTextExcerpt
 } from "../../utils/UIComponents";
@@ -43,9 +42,6 @@ function ProjectListRowBar(props) {
   const url = Url.get(Url.pages.project, { namespace, path });
   const title = path_with_namespace || "no title";
 
-  const colorsArray = ["green", "pink", "yellow"];
-  const color = colorsArray[stringScore(title) % 3];
-
   const descriptionMarkdown = description ?
     (
       <Fragment>
@@ -57,7 +53,7 @@ function ProjectListRowBar(props) {
 
   return (
     <Link className="d-flex flex-row rk-search-result" to={url}>
-      <span className={"circle me-3 mt-2 " + color}></span>
+      <span className={"circle me-3 mt-2 project"}></span>
       <Col className="d-flex align-items-start flex-column col-10 overflow-hidden">
         <div className="title d-inline-block text-truncate">
           {title}
@@ -94,8 +90,8 @@ function ProjectListRows(props) {
     return {
       id: project.id,
       url: url,
-      stringScore: stringScore(project.path_with_namespace) % 3,
       title: project.path_with_namespace,
+      itemType: "project",
       description: project.description ?
         <Fragment>
           <MarkdownTextExcerpt markdownText={project.description} singleLine={gridDisplay ? false : true}

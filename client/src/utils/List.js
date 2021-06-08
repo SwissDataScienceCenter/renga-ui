@@ -34,15 +34,16 @@ import { ProjectTagList } from "../project/shared/ProjectTag.container";
  * @param labelCaption label to put inside the time caption of the item, if empty defaults to Updated.
  * @param mediaContent image of the item.
  * @param creators creators of the item, if more than 3 they will be cropped at 3.
+ * @param itemType type of the item being rendered, the color of the circle depends on this.
  */
 function ListCard(props) {
-  const { url, color, title, description, tagList, timeCaption, labelCaption, mediaContent, creators } = props;
+  const { url, title, description, tagList, timeCaption, labelCaption, mediaContent, creators, itemType } = props;
 
   return (
     <div className="col text-decoration-none p-2 rk-search-result-card">
       <Link to={url} className="col text-decoration-none">
         <div className="card card-body border-0">
-          <span className={"circle me-3 mt-2 mb-2 " + color}> </span>
+          <span className={"circle me-3 mt-2 mb-2 " + itemType}> </span>
           <div className="title lh-sm">
             {title}
           </div>
@@ -84,10 +85,10 @@ function ListCard(props) {
 
 function ListBar(props) {
 
-  const { url, color, title, description, tagList, timeCaption, labelCaption, mediaContent, creators } = props;
+  const { url, title, description, tagList, timeCaption, labelCaption, mediaContent, creators, itemType } = props;
 
   return <Link className="d-flex flex-row rk-search-result" to={url}>
-    <span className={"circle me-3 mt-2 " + color}></span>
+    <span className={"circle me-3 mt-2 " + itemType}></span>
     <Col className="d-flex align-items-start flex-column col-10 overflow-hidden">
       <div className="title d-inline-block text-truncate">
         {title}
@@ -148,11 +149,9 @@ function ListDisplay(props) {
   if (!items || !items.length)
     return (<p>We could not find any matching {itemsType}s.</p>);
 
-  const colorsArray = ["green", "pink", "yellow"];
-
   const rows = gridDisplay ?
-    items.map(item => <ListCard key={item.id} {...item} color={colorsArray[item.stringScore]}/>)
-    : items.map(item => <ListBar key={item.id} {...item} color={colorsArray[item.stringScore]}/>);
+    items.map(item => <ListCard key={item.id} {...item} />)
+    : items.map(item => <ListBar key={item.id} {...item} />);
 
   const onPageChange = (page) => { search({ page }); };
 

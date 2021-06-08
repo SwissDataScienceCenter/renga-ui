@@ -23,14 +23,19 @@
   display:inline-table;
 }
 
-.circle.green {
+.circle.project {
   background: #009568;
 }
 
-.circle.yellow {
+.circle.workflow {
   background: #D1BB4C;
 }
 
-.circle.pink {
+// TODO - DELETE WHEN COLLABORATION IFRAME IS MERGED
+.circle.collaboration {
+  background: rgba(128, 128, 128, 0.893);
+}
+
+.circle.dataset {
   background: #D26A98;
 }
