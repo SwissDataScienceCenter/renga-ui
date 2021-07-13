@@ -52,7 +52,7 @@ import {
 import FilesTreeView from "./filestreeview/FilesTreeView";
 import DatasetsListView from "./datasets/DatasetsListView";
 import { ACCESS_LEVELS } from "../api-client";
-import ProjectVersionStatus from "./status/ProjectVersionStatus.present";
+import ProjectVersionStatus, { displayWarningSignForVersion } from "./status/ProjectVersionStatus.present";
 import { NamespaceProjects } from "../namespace";
 import { ProjectOverviewCommits, ProjectOverviewStats } from "./overview";
 import { ForkProject } from "./new";
@@ -118,14 +118,15 @@ function ProjectVisibilityLabel({ visibilityLevel }) {
  */
 class ProjectStatusIcon extends Component {
   render() {
-    const { webhook, migration_required, docker_update_possible, template_update_possible,
-      overviewStatusUrl, history } = this.props;
+    const { webhook, overviewStatusUrl, history, migration } = this.props;
     const kgDown = isKgDown(webhook);
 
-    if (!migration_required && !docker_update_possible && !template_update_possible && !kgDown)
+    const warningSignForVersionDisplayed = displayWarningSignForVersion(migration);
+
+    if (!warningSignForVersionDisplayed && !kgDown)
       return null;
 
-    const versionInfo = (migration_required || docker_update_possible || template_update_possible) ?
+    const versionInfo = warningSignForVersionDisplayed ?
       "Current project is outdated. " :
       null;
     const kgInfo = kgDown ?
@@ -225,9 +226,7 @@ function ProjectIdentifier(props) {
             history={props.history}
             webhook={props.webhook}
             overviewStatusUrl={props.overviewStatusUrl}
-            migration_required={props.migration.migration_required}
-            template_update_possible={props.migration.template_update_possible}
-            docker_update_possible={props.migration.docker_update_possible}
+            migration={props.migration}
           />{projectTitle}
           <ProjectVisibilityLabel visibilityLevel={props.visibility.level} />
         </h2>

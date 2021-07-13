@@ -56,19 +56,11 @@ class ProjectModel extends StateModel {
         else {
           client.performMigrationCheck(response)
             .then((response)=>{
-              if (response.data && response.data.error !== undefined) {
+              if (response.data && response.data.error !== undefined)
                 this.set("migration.check_error", response.data.error);
-              }
-              else {
-                this.set("migration.migration_required", response.data.result.migration_required);
-                this.set("migration.project_supported", response.data.result.project_supported);
-                this.set("migration.docker_update_possible", response.data.result.docker_update_possible);
-                this.set("migration.latest_version", response.data.result.latest_version);
-                this.set("migration.project_version", response.data.result.project_version);
-                this.set("migration.template_update_possible", response.data.result.template_update_possible);
-                this.set("migration.latest_template_version", response.data.result.latest_template_version);
-                this.set("migration.current_template_version", response.data.result.current_template_version);
-              }
+
+              else
+                this.set("migration", response.data.result);
             });
         }
       });
