@@ -33,8 +33,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars
 } from "@fortawesome/free-solid-svg-icons";
+import { faDiscourse } from "@fortawesome/free-brands-svg-icons";
 
-import { RenkuNavLink } from "../utils/UIComponents";
+import { ExternalIconLink, RenkuNavLink } from "../utils/UIComponents";
 import { StatuspageBanner } from "../statuspage";
 import QuickNav from "../utils/quicknav";
 import { RenkuToolbarHelpMenu, RenkuToolbarNotifications } from "./NavBar";
@@ -47,10 +48,6 @@ import Look from "./Graphics/Look.jpg";
 import Sessions from "./Graphics/Sessions.jpg";
 import Context from "./Graphics/Context.jpg";
 
-function SwitchToOldVersion() {
-  const ninetyDays = 60 * 60 * 24 * 90;
-  document.cookie = `other-ui=never; max-age=${ninetyDays}; path=/`;
-}
 
 function HomeHeader(props) {
   const [isOpen, setIsOpen] = useState(false);
@@ -109,7 +106,6 @@ function HomeHeader(props) {
 }
 
 function Section1(props) {
-  const oldUiUrl = `/?v=${new Date().getTime()}`;
   const backgroundUrl = VisualHead;
   return <div id="rk-anon-home-section1"
     style={{
@@ -119,21 +115,20 @@ function Section1(props) {
     <div className="rk-anon-home-section-content">
       <Row>
         <Col className="rk-pt-l rk-w-s" >
-          <h1 className="text-white">RenkuLab Technology Preview</h1>
+          <h1 className="text-white">RenkuLab</h1>
         </Col>
       </Row>
       <Row>
         <Col className="rk-pt-s rk-w-s">
-          <h3 className="text-rk-green">Many improvements are in store for RenkuLab.{" "}
-            Try them out and let us know what you think!</h3>
+          <h3 className="text-rk-green">We have been improving RenkuLab.</h3>
+          <h3 className="text-rk-pink">Welcome to the new version!</h3>
         </Col>
       </Row>
       <Row>
         <Col className="rk-pt-s rk-w-s">
-          <a href={oldUiUrl} className="btn btn-outline-rk-pink" role="button"
-            onClick={SwitchToOldVersion}>
-            Back to Old UI
-          </a>
+          <ExternalIconLink
+            className="btn btn-outline-rk-pink"
+            url="https://renku.discourse.group" icon={faDiscourse} title="Feedback" />
           {" "}
           <HashLink className="btn btn-outline-rk-yellow" role="button"
             to="#rk-anon-home-section2">
@@ -154,11 +149,10 @@ function Section2(props) {
     <div className="rk-anon-home-section-content">
       <Row className="rk-pt-m">
         <Col md={4}>
-          <h3 className="text-rk-pink">Try out the new UI</h3>
+          <h3 className="text-rk-pink">A cleaner design...</h3>
         </Col>
         <Col md={{ size: 7, offset: 1 }}>
-          <h3 className="text-secondary">We have been working to improve the look <br />
-            and experience of using RenkuLab!
+          <h3 className="text-secondary">...easier to use and a better<br />overall experience!
           </h3>
         </Col>
       </Row>
@@ -205,10 +199,9 @@ function Section3(props) {
         <Col md={9} lg={6} className="rk-pt-m" style={{ maxWidth: "660px", background: "rgba(245, 245, 245, 0.7)" }}>
           <h3>More improvements on the way</h3>
           <p>
-            The new UI has been tested, and we think it is ready to ship; there are also
-            further improvements in the works. We want to give users control of when they switch over.
-            We know that if you are in the middle of a project, it might not be an ideal time right now, but if
-            you are inclined, we encourage you to try out the new RenkuLab UI!
+            There are further improvements in the works. We are working on making it easier to{" "}
+            track and understand the lineage of your results, simplifying reuse of workflows, and{" "}
+            aim to allow easy access to shared datasets.
           </p>
         </Col>
       </Row>
