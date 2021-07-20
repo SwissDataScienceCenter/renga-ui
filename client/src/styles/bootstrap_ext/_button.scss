@@ -73,3 +73,15 @@
     color: white;
   }
 }
+
+.link-alert-warning{
+  color: #605000;
+  text-decoration: unset;
+  &:hover{
+  color: #605000;
+    text-decoration: underline;
+  }
+  &:focus{
+    box-shadow: unset;
+  }
+}
