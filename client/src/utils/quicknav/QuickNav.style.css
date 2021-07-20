@@ -1,3 +1,7 @@
+#quick-nav > .react-autosuggest__container {
+  flex-grow: 1;
+}
+
 .searchBarSuggestionsContainer {
   position: absolute;
   top: 100%;
@@ -5,7 +9,7 @@
   left: 0px;
   right: auto;
   display: block;
-  background-color: #fff;   
+  background-color: #fff;
   min-width: 300px;
 }
 

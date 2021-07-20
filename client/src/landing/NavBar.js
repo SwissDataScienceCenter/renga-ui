@@ -220,26 +220,26 @@ class LoggedInNavBar extends Component {
   render() {
     return (
       <header className="navbar navbar-expand-lg navbar-dark rk-navbar p-0">
-        <Navbar color="primary" className="container-fluid flex-wrap flex-lg-nowrap renku-container">
+        <Navbar color="primary" className="container-fluid flex-wrap flex-lg-nowrap pb-3 renku-container">
           <NavbarBrand href="/" className="navbar-brand me-2 pb-0 pt-0">
-            <img src={logo} alt="Renku" height="68" className="d-block my-1" />
+            <img src={logo} alt="Renku" height="50" className="d-block" />
           </NavbarBrand>
-          <NavbarToggler onClick={this.toggle} className="border-0 mt-3">
+          <NavbarToggler onClick={this.toggle} className="border-0">
             <FontAwesomeIcon icon={faBars} id="userIcon" color="white" />
           </NavbarToggler>
-          <Collapse isOpen={!this.state.isOpen} navbar className="mt-2">
+          <Collapse isOpen={!this.state.isOpen} navbar>
             <Nav className="navbar-nav flex-row flex-wrap ms-lg-auto">
-              <NavItem className="nav-item col-6 col-lg-auto pe-4">
+              <NavItem className="nav-item col-12 col-lg-auto pe-0 pe-lg-4 my-2 my-lg-0">
                 <QuickNav client={this.props.client} model={this.props.model} user={this.props.user} />
               </NavItem>
-              <NavItem className="nav-item col-6 col-lg-auto">
+              <NavItem className="nav-item col-4 col-lg-auto">
                 <RenkuNavLink to="/projects" alternate={["/projects/all", "/projects/starred"]}
                   title="Projects" id="link-projects" className="link-secondary" />
               </NavItem>
-              <NavItem className="nav-item col-6 col-lg-auto">
+              <NavItem className="nav-item col-4 col-lg-auto">
                 <RenkuNavLink to="/datasets" title="Datasets" id="link-datasets" />
               </NavItem>
-              <NavItem className="nav-item col-6 col-lg-auto pe-4">
+              <NavItem className="nav-item col-4 col-lg-auto pe-4">
                 <RenkuNavLink to="/sessions" title="Sessions" id="link-sessions" />
               </NavItem>
               <NavItem className="nav-item col-1 col-lg-auto">
@@ -292,7 +292,7 @@ class AnonymousNavBar extends Component {
             <FontAwesomeIcon icon={faBars} id="userIcon" color="white" />
           </NavbarToggler>
           <Collapse isOpen={!this.state.isOpen} navbar className="mt-2">
-            <Nav className="navbar-nav flex-row flex-wrap ms-lg-auto">
+            <Nav className="navbar-nav flex-row flex-wrap ms-lg-auto align-items-center">
               <NavItem className="nav-item col-6 col-lg-auto pe-4">
                 <QuickNav client={this.props.client} model={this.props.model} user={this.props.user} />
               </NavItem>
